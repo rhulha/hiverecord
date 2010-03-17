@@ -16,12 +16,12 @@ public class HiveRecordTest extends AbstractHiveRecordTest {
 	HiveRecord<Message> message = new Message();
 	
 	@Before
-	public void readyHiberRecordSessionFactory() {
+	public void readyHiveRecordSessionFactory() {
 		HiveRecordSessionFactory.register(createSessionFactory());		
 	}
 
 	@After
-	public void clearHiberRecordSessionFactory() {
+	public void clearHiveRecordSessionFactory() {
 		HiveRecordSessionFactory.unregister();
 	}
 
