@@ -12,13 +12,13 @@ import org.apache.commons.logging.LogFactory;
 public class JPASessionManager<T> implements SessionManager<T> {
 	private static Log LOG = LogFactory.getLog(JPASessionManager.class);
 	
-	EntityManagerFactory managerFactory;
+	EntityManagerFactory factory;
 	EntityManager manager;
 	EntityTransaction transaction;
 	boolean rollbacked = false;
 
 	public JPASessionManager(EntityManagerFactory entityManagerFactory) {
-		this.managerFactory = entityManagerFactory;
+		this.factory = entityManagerFactory;
 	}
 
 	public T find(Class<T> entityClass, Object primaryKey) {
@@ -135,7 +135,7 @@ public class JPASessionManager<T> implements SessionManager<T> {
 	
 	private void ready() {
 		try {
-			manager = managerFactory.createEntityManager();
+			manager = factory.createEntityManager();
 		} catch (Exception e) {
 			throw new HiveRecordException(e.toString(), e);
 		}
