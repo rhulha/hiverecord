@@ -5,7 +5,7 @@
 	<artifactId>hiverecord</artifactId>
 	<name>hiverecord</name>
 	<packaging>jar</packaging>
-	<version>0.1</version>
+	<version>0.1-SNAPSHOT</version>
 
 	<repositories>
 		<repository>
@@ -13,7 +13,16 @@
 			<url>http://repository.jboss.com/maven2</url>
 		</repository>
 	</repositories>
-	
+
+	<pluginRepositories>
+		<pluginRepository>
+			<id>undercover</id>
+			<url>
+				http://undercover.googlecode.com/svn/maven/repository
+			</url>
+		</pluginRepository>
+	</pluginRepositories>
+
 	<reporting>
 		<plugins>
 			<plugin>
@@ -35,28 +44,38 @@
 			</plugin>
 		</plugins>
 	</reporting>
-	
+
+	<distributionManagement>
+		<repository>
+			<id>hiverecord</id>
+			<url>
+				dav:https://hiverecord.googlecode.com/svn/maven/repository
+			</url>
+		</repository>
+		<snapshotRepository>
+			<id>hiverecord-snapshot</id>
+			<url>
+				dav:https://hiverecord.googlecode.com/svn/maven/snapshot-repository
+			</url>
+		</snapshotRepository>
+	</distributionManagement>
+
 	<dependencies>
 		<!-- Required -->
 		<dependency>
 			<groupId>org.hibernate</groupId>
-			<artifactId>hibernate</artifactId>
-			<version>3.2.6.ga</version>
+			<artifactId>hibernate-entitymanager</artifactId>
+			<version>3.4.0.GA</version>
 		</dependency>
 		<dependency>
-			<groupId>hibernate-annotations</groupId>
-			<artifactId>hibernate-annotations</artifactId>
-			<version>3.3.0.GA</version>
-		</dependency>
+		    <groupId>org.slf4j</groupId>
+		    <artifactId>slf4j-log4j12</artifactId>
+		    <version>1.5.2</version>
+		</dependency>		
 		<dependency>
-			<groupId>org.hibernate</groupId>
-			<artifactId>hibernate-commons-annotations</artifactId>
-			<version>3.3.0.ga</version>
-		</dependency>
-		<dependency>
-			<groupId>org.hsqldb</groupId>
-			<artifactId>com.springsource.org.hsqldb</artifactId>
-			<version>1.8.0.9</version>
+		    <groupId>hsqldb</groupId>
+		    <artifactId>hsqldb</artifactId>
+		    <version>1.8.0.10</version>
 		</dependency>
 
 		<dependency>
@@ -79,6 +98,7 @@
 			<artifactId>commons-lang</artifactId>
 			<version>2.4</version>
 		</dependency>
+		
 		<!-- Dependencies for testing -->
 		<dependency>
 			<groupId>junit</groupId>
@@ -97,6 +117,6 @@
 			<artifactId>hamcrest-library</artifactId>
 			<version>1.1</version>
 			<scope>test</scope>
-		</dependency>		
+		</dependency>
 	</dependencies>
 </project>
