@@ -20,7 +20,7 @@ import com.googlecode.hiverecord.support.Message;
 
 @RunWith(MockitoJUnitRunner.class)
 public class JPASessionManagerTest {
-	JPASessionManager<Message> O = new JPASessionManager<Message>(null);
+	JPASessionManager<Message> O;
 	@Mock
 	EntityManager manager;
 	@Mock
@@ -31,7 +31,7 @@ public class JPASessionManagerTest {
 	@Before
 	public void prepereFactoryMock() {
 		when(factory.createEntityManager()).thenReturn(manager);
-		O.factory = factory;
+		O = new JPASessionManager<Message>(factory);
 	}
 
 	@Before
