@@ -38,7 +38,7 @@ public class HiveRecordTest extends AbstractHiveRecordTest {
 	}
 	
 	@Test
-	public void messageCanBePersistedAndThenFoundAgain() {
+	public void entityCanBePersistedAndThenFoundAgain() {
 		Message message = new Message("Hello " + System.currentTimeMillis());
 		Long id = (Long)message.save();
 		
@@ -48,7 +48,7 @@ public class HiveRecordTest extends AbstractHiveRecordTest {
 	}
 
 	@Test
-	public void messageCanBeMerged() {
+	public void entityCanBeMerged() {
 		Message message = new Message("Hello " + System.currentTimeMillis());
 		Long id = (Long)message.save();
 		message.setMessage("Modifed");
@@ -59,13 +59,13 @@ public class HiveRecordTest extends AbstractHiveRecordTest {
 	}
 	
 	@Test
-	public void allMessagesCanBeObtainedWhenThereIsNoRow() {
+	public void allEntitiesCanBeObtainedWhenThereIsNoRow() {
 		List<Message> messages = Message.findAll(Message.class);
 		assertThat(messages.size(), is(0));
 	}
 
 	@Test
-	public void allMessagesCanBeObtainedWhenThereAreSomeRows() {
+	public void allEntitiesCanBeObtainedWhenThereAreSomeRows() {
 		Message message = new Message("Hello " + System.currentTimeMillis());
 		message.save();
 		message = new Message("Hello " + System.currentTimeMillis());
@@ -73,5 +73,15 @@ public class HiveRecordTest extends AbstractHiveRecordTest {
 		
 		List<Message> messages = Message.findAll(Message.class);
 		assertThat(messages.size(), is(2));
+	}
+	
+	@Test
+	public void entityCanBeRemoved() {
+		Message message = new Message("Hello " + System.currentTimeMillis());
+		message.save();
+		
+		message.remove();
+
+		assertThat(Message.findAll(Message.class).size(), is(0));
 	}
 }

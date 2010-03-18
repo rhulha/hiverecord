@@ -30,6 +30,24 @@ public abstract class HiveRecord<T> {
 		}		
 	}
 
+	public void remove() {
+		Session session = null;
+		Transaction tx = null;
+		try {
+			session = HiveRecordSessionFactory.openSession();
+			tx = session.beginTransaction();
+			session.delete(this);
+			tx.commit();
+		} catch (IllegalStateException e) {
+			throw e;
+		} catch (Exception e) {
+			fail(tx, e);
+			throw new HiveRecordException(e.toString(), e);					
+		} finally {
+			closeQuietly(session);			
+		}		
+	}
+
 	@SuppressWarnings("unchecked")
 	public T merge() {
 		Session session = null;
