@@ -53,8 +53,9 @@ public class JPASessionManagerTest {
 		try {
 			O.find(Message.class, 1L);
 		} catch (HiveRecordException e) {
-			verify(transaction).rollback();
 		}
+
+		verify(transaction).rollback();
 	}
 
 	@Test
@@ -65,9 +66,10 @@ public class JPASessionManagerTest {
 		try {
 			O.find(Message.class, 1L);
 		} catch (HiveRecordException e) {
-			verify(manager).close();
 		}
-	}
+
+		verify(manager).close();
+}
 	
 	@Test
 	public void shouldBeCommitedAfterFindingEntity() throws Exception {
@@ -196,5 +198,54 @@ public class JPASessionManagerTest {
 		O.rollbacked = true;
 		O.commit();
 		verifyNoMoreInteractions(transaction);
+	}
+
+	@Test
+	public void shouldBeCommited() {
+		O.transaction = transaction;
+		O.commit();
+		verify(transaction).commit();
+	}
+	
+	@Test
+	public void rollbackFlagShouldChangeToTrueAfterRollback() {
+		assertThat(O.rollbacked, is(false));
+		O.rollback(new Exception("SomeException"));
+		assertThat(O.rollbacked, is(true));
+	}
+	
+	@Test
+	public void managerShouldBeClosed() {
+		O.manager = manager;
+		O.closeQuietly();
+		verify(manager).close();
+	}
+	
+	@Test
+	public void entityManagerShouldBeReadyBeforeTransaction() {
+		O.ready();
+		assertThat(O.manager, is(notNullValue()));
+	}
+	
+	@Test
+	public void transactionShouldBeStarted() {
+		O.manager = manager;
+		O.beginTransaction();
+		verify(transaction).begin();
+	}
+	
+	@Test
+	public void entityManagerShouldBeClosedWhenFailingBeginTransaction() {
+		O.manager = manager;
+		O.transaction = transaction;
+		when(manager.getTransaction()).thenThrow(new RuntimeException());
+		
+		try {
+			O.beginTransaction();
+		} catch (RuntimeException e) {
+		}
+
+		verifyNoMoreInteractions(transaction);
+		verify(manager).close();			
 	}
 }

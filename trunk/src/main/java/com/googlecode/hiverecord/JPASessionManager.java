@@ -101,7 +101,7 @@ public class JPASessionManager<T> implements SessionManager<T> {
 		}		
 	}
 
-	private void commit() {
+	void commit() {
 		if (rollbacked) {
 			return;
 		}
@@ -114,7 +114,7 @@ public class JPASessionManager<T> implements SessionManager<T> {
 		}
 	}
 
-	private void rollback(Exception e) {
+	void rollback(Exception e) {
 		rollbacked = true;
 		
 		if (transaction != null) {
@@ -123,7 +123,7 @@ public class JPASessionManager<T> implements SessionManager<T> {
 		}
 	}
 	
-	public void closeQuietly() {
+	void closeQuietly() {
 		if (manager != null) {
 			try {
 				manager.close();
@@ -133,7 +133,7 @@ public class JPASessionManager<T> implements SessionManager<T> {
 		}
 	}
 	
-	private void ready() {
+	void ready() {
 		try {
 			manager = factory.createEntityManager();
 		} catch (Exception e) {
@@ -141,7 +141,7 @@ public class JPASessionManager<T> implements SessionManager<T> {
 		}
 	}
 
-	private void beginTransaction() {
+	void beginTransaction() {
 		try {
 			LOG.info("Transaction has just began.");
 			transaction = manager.getTransaction();
