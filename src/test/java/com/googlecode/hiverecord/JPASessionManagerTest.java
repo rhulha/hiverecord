@@ -12,7 +12,6 @@ import javax.persistence.EntityManagerFactory;
 import javax.persistence.EntityTransaction;
 import javax.persistence.Query;
 
-import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -46,26 +45,30 @@ public class JPASessionManagerTest {
 		when(manager.getTransaction()).thenReturn(transaction);
 	}
 
-	@After
-	public void entityManagerMustBeClosed() {
-		verify(manager).close();
-	}
-
-	@Test(expected = HiveRecordException.class)
+	@Test
 	public void shouldBeRollbackedWhenThereAreProblemsWithFind()
 			throws Exception {
 		when(manager.find(Message.class, 1L)).thenThrow(new RuntimeException());
 
 		try {
 			O.find(Message.class, 1L);
-		} catch (Exception e) {
+		} catch (HiveRecordException e) {
 			verify(transaction).rollback();
-			throw e;
 		}
-
-		fail();
 	}
 
+	@Test
+	public void shouldBeClosedEvenThoughThereAreProblemsWithFind()
+			throws Exception {
+		when(manager.find(Message.class, 1L)).thenThrow(new RuntimeException());
+
+		try {
+			O.find(Message.class, 1L);
+		} catch (HiveRecordException e) {
+			verify(manager).close();
+		}
+	}
+	
 	@Test
 	public void shouldBeCommitedAfterFindingEntity() throws Exception {
 		when(manager.find(Message.class, 1L)).thenReturn(messsage);
@@ -74,6 +77,12 @@ public class JPASessionManagerTest {
 
 		assertThat(result, equalTo(messsage));
 		verify(transaction).commit();
+	}
+
+	@Test
+	public void shouldBeClosedAfterFindingEntity() throws Exception {
+		O.find(Message.class, 1L);
+		verify(manager).close();
 	}
 
 	@Test(expected = HiveRecordException.class)
@@ -86,6 +95,7 @@ public class JPASessionManagerTest {
 			O.findAll(Message.class);
 		} catch (Exception e) {
 			verify(transaction).rollback();
+			verify(manager).close();
 			throw e;
 		}
 
@@ -100,13 +110,14 @@ public class JPASessionManagerTest {
 		assertThat(O.findAll(Message.class).size(), is(0));
 
 		verify(transaction).commit();
+		verify(manager).close();
 	}
 
 	@Test
 	public void openStateShouldBeReturned() {
 		when(manager.isOpen()).thenReturn(true);
-
 		assertThat(O.isOpen(), is(true));
+		verify(manager).close();
 	}
 
 	@Test(expected = HiveRecordException.class)
@@ -118,6 +129,7 @@ public class JPASessionManagerTest {
 			O.merge(messsage);
 		} catch (Exception e) {
 			verify(transaction).rollback();
+			verify(manager).close();
 			throw e;
 		}
 
@@ -129,6 +141,7 @@ public class JPASessionManagerTest {
 		when(manager.merge(messsage)).thenReturn(messsage);
 		O.merge(messsage);
 		verify(transaction).commit();
+		verify(manager).close();
 	}
 
 	@Test(expected = HiveRecordException.class)
@@ -140,6 +153,7 @@ public class JPASessionManagerTest {
 			O.persist(messsage);
 		} catch (Exception e) {
 			verify(transaction).rollback();
+			verify(manager).close();
 			throw e;
 		}
 
@@ -150,6 +164,7 @@ public class JPASessionManagerTest {
 	public void shouldBeCommitedAfterPersistingEntity() throws Exception {
 		O.merge(messsage);
 		verify(transaction).commit();
+		verify(manager).close();
 	}
 
 	@Test(expected = HiveRecordException.class)
@@ -162,6 +177,7 @@ public class JPASessionManagerTest {
 			O.remove(messsage);
 		} catch (Exception e) {
 			verify(transaction).rollback();
+			verify(manager).close();
 			throw e;
 		}
 
@@ -172,5 +188,13 @@ public class JPASessionManagerTest {
 	public void shouldBeCommitedAfterRemovingEntity() throws Exception {
 		O.remove(messsage);
 		verify(transaction).commit();
+		verify(manager).close();
+	}
+	
+	@Test 
+	public void shouldBeNotCommitedAfterRollbacked() {
+		O.rollbacked = true;
+		O.commit();
+		verifyNoMoreInteractions(transaction);
 	}
 }
