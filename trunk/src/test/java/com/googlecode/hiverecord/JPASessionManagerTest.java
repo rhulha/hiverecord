@@ -1,15 +1,18 @@
 package com.googlecode.hiverecord;
 
-import static org.hamcrest.Matchers.equalTo;
-import static org.hamcrest.Matchers.is;
-import static org.junit.Assert.assertThat;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.hamcrest.Matchers.*;
+import static org.junit.Assert.*;
+import static org.mockito.Matchers.*;
+import static org.mockito.Mockito.*;
+
+import java.util.ArrayList;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.EntityTransaction;
+import javax.persistence.Query;
 
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -27,7 +30,11 @@ public class JPASessionManagerTest {
 	EntityManagerFactory factory;
 	@Mock
 	EntityTransaction transaction;
-	
+	@Mock
+	Query query;
+
+	Message messsage = new Message("expected");
+
 	@Before
 	public void prepereFactoryMock() {
 		when(factory.createEntityManager()).thenReturn(manager);
@@ -38,30 +45,132 @@ public class JPASessionManagerTest {
 	public void prepereTransactionMock() {
 		when(manager.getTransaction()).thenReturn(transaction);
 	}
-	
-	@Test(expected=HiveRecordException.class)
-	public void transactionShouldBeRollbackedAndClosedWhenCanNotFind() throws Exception {
+
+	@After
+	public void entityManagerMustBeClosed() {
+		verify(manager).close();
+	}
+
+	@Test(expected = HiveRecordException.class)
+	public void shouldBeRollbackedWhenThereAreProblemsWithFind()
+			throws Exception {
 		when(manager.find(Message.class, 1L)).thenThrow(new RuntimeException());
-		
+
 		try {
 			O.find(Message.class, 1L);
 		} catch (Exception e) {
+			verify(transaction).rollback();
 			throw e;
-		} finally {
-			assertThat(O.rollbacked, is(true));
-			verify(manager).close();
 		}
+
+		fail();
 	}
 
 	@Test
-	public void transactionShouldBeCommitedAndClosedWhenCanFind() throws Exception {
-		Message expectedMesssage = new Message("expected");
-		when(manager.find(Message.class, 1L)).thenReturn(expectedMesssage);
-		
+	public void shouldBeCommitedAfterFindingEntity() throws Exception {
+		when(manager.find(Message.class, 1L)).thenReturn(messsage);
+
 		Message result = O.find(Message.class, 1L);
-		
-		assertThat(result, equalTo(expectedMesssage));
+
+		assertThat(result, equalTo(messsage));
 		verify(transaction).commit();
-		verify(manager).close();
+	}
+
+	@Test(expected = HiveRecordException.class)
+	public void shouldBeRollbackedWhenThereAreProblemsWithFindAll()
+			throws Exception {
+		when(manager.createQuery(anyString()))
+				.thenThrow(new RuntimeException());
+
+		try {
+			O.findAll(Message.class);
+		} catch (Exception e) {
+			verify(transaction).rollback();
+			throw e;
+		}
+
+		fail();
+	}
+
+	@Test
+	public void shouldBeCommitedAfterFindingAllEntity() throws Exception {
+		when(manager.createQuery(anyString())).thenReturn(query);
+		when(query.getResultList()).thenReturn(new ArrayList<Message>());
+
+		assertThat(O.findAll(Message.class).size(), is(0));
+
+		verify(transaction).commit();
+	}
+
+	@Test
+	public void openStateShouldBeReturned() {
+		when(manager.isOpen()).thenReturn(true);
+
+		assertThat(O.isOpen(), is(true));
+	}
+
+	@Test(expected = HiveRecordException.class)
+	public void shouldBeRollbackedWhenThereAreProblemsWithMerge()
+			throws Exception {
+		when(manager.merge(messsage)).thenThrow(new RuntimeException());
+
+		try {
+			O.merge(messsage);
+		} catch (Exception e) {
+			verify(transaction).rollback();
+			throw e;
+		}
+
+		fail();
+	}
+
+	@Test
+	public void shouldBeCommitedAfterMergingEntity() {
+		when(manager.merge(messsage)).thenReturn(messsage);
+		O.merge(messsage);
+		verify(transaction).commit();
+	}
+
+	@Test(expected = HiveRecordException.class)
+	public void shouldBeRollbackedWhenThereAreProblemsWithPersist()
+			throws Exception {
+		doThrow(new RuntimeException()).when(manager).persist(messsage);
+
+		try {
+			O.persist(messsage);
+		} catch (Exception e) {
+			verify(transaction).rollback();
+			throw e;
+		}
+
+		fail();
+	}
+
+	@Test
+	public void shouldBeCommitedAfterPersistingEntity() throws Exception {
+		O.merge(messsage);
+		verify(transaction).commit();
+	}
+
+	@Test(expected = HiveRecordException.class)
+	public void shouldBeRollbackedWhenThereAreProblemsWithRemove()
+			throws Exception {
+		when(manager.merge(messsage)).thenReturn(messsage);
+		doThrow(new RuntimeException()).when(manager).remove(messsage);
+
+		try {
+			O.remove(messsage);
+		} catch (Exception e) {
+			verify(transaction).rollback();
+			throw e;
+		}
+
+		fail();
+	}
+
+	@Test
+	public void shouldBeCommitedAfterRemovingEntity() throws Exception {
+		O.remove(messsage);
+		verify(transaction).commit();
 	}
 }
