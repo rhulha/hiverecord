@@ -14,7 +14,7 @@ import com.googlecode.hiverecord.support.Message;
 
 public class SessionManagerFactoryTest {
 	@Test(expected = IllegalStateException.class)
-	public void exceptionShouldBeThrownForNotifyingUserTo() {
+	public void exceptionShouldBeThrownWhenSessionManagerFactoryIsNotBeingReady() {
 		@SuppressWarnings("unused")
 		SessionManager<Message> result = SessionManagerFactory.obtainSessionManager();
 	}

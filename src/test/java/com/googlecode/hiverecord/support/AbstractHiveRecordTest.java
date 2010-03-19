@@ -31,7 +31,7 @@ public abstract class AbstractHiveRecordTest {
 	}
 	
 	@Test(expected=IllegalStateException.class)
-	public void activeRecordShouldThrowExceptionWhenSessionFactoryIsNotBeingReady() {
+	public void shouldThrowExceptionWhenSessionFactoryIsNotBeingReady() {
 		SessionManagerFactory.unregister();
 		Message.find(Message.class, 1L);
 	}
