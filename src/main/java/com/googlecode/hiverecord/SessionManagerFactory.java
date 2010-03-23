@@ -2,26 +2,11 @@ package com.googlecode.hiverecord;
 
 import javax.persistence.EntityManagerFactory;
 
-import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 
 public class SessionManagerFactory {
 	private static SessionFactory sessionFactory;
 	private static EntityManagerFactory entityManagerFactory;
-
-	/**
-	 * @deprecated
-	 * @see #obtainSessionManager
-	 */
-	public static Session openSession() {
-		if (sessionFactory == null) {
-			throw new IllegalStateException(
-					"You should register Hibernate SessionFactory to "
-							+ SessionManagerFactory.class.toString());
-		}
-
-		return sessionFactory.openSession();
-	}
 
 	public static void register(EntityManagerFactory entityManagerFactory) {
 		SessionManagerFactory.entityManagerFactory = entityManagerFactory; 

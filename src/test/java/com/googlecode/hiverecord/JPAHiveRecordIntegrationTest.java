@@ -5,7 +5,7 @@ import org.junit.Before;
 
 import com.googlecode.hiverecord.support.AbstractHiveRecordTest;
 
-public class JPAHiveRecordTest extends AbstractHiveRecordTest {
+public class JPAHiveRecordIntegrationTest extends AbstractHiveRecordTest {
 	@Before
 	public void readyHiveRecordSessionFactory() {
 		SessionManagerFactory.register(createEntityManagerFactory());		
