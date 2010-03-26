@@ -1,4 +1,4 @@
-package com.googlecode.hiverecord;
+package com.googlecode.hiverecord.support;
 
 import static org.hamcrest.CoreMatchers.*;
 import static org.junit.Assert.*;
@@ -12,7 +12,8 @@ import org.hibernate.SessionFactory;
 import org.hibernate.cfg.AnnotationConfiguration;
 import org.junit.Test;
 
-import com.googlecode.hiverecord.SessionManagerFactory;
+import com.googlecode.hiverecord.EntitySessionFactory;
+import com.googlecode.hiverecord.Message;
 
 public abstract class AbstractHiveRecordTest {
 	protected SessionFactory createSessionFactory() {
@@ -32,7 +33,7 @@ public abstract class AbstractHiveRecordTest {
 	
 	@Test(expected=IllegalStateException.class)
 	public void shouldThrowExceptionWhenSessionFactoryIsNotBeingReady() {
-		SessionManagerFactory.unregister();
+		EntitySessionFactory.unregister();
 		Message.find(Message.class, 1L);
 	}
 	
