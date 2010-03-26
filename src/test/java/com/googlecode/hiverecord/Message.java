@@ -1,12 +1,10 @@
-package com.googlecode.hiverecord.support;
+package com.googlecode.hiverecord;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
-
-import com.googlecode.hiverecord.HiveRecord;
 
 @Entity
 public class Message extends HiveRecord<Message> {
@@ -16,7 +14,7 @@ public class Message extends HiveRecord<Message> {
 	private String message;
 	@ManyToOne(cascade = CascadeType.ALL)
 	private Message nextMessage;
-	
+
 	public Message() {
 	}
 
