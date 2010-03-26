@@ -2,14 +2,15 @@ package com.googlecode.hiverecord;
 
 import static org.hamcrest.CoreMatchers.*;
 import static org.junit.Assert.*;
+import static org.mockito.Matchers.*;
 import static org.mockito.Mockito.*;
 
 import java.util.ArrayList;
-import java.util.List;
 
-import org.hibernate.Criteria;
-import org.hibernate.Session;
-import org.hibernate.Transaction;
+import javax.persistence.EntityManager;
+import javax.persistence.EntityTransaction;
+import javax.persistence.Query;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -18,90 +19,86 @@ import org.mockito.runners.MockitoJUnitRunner;
 import com.googlecode.hiverecord.support.EntitySessionTestScenario;
 
 @RunWith(MockitoJUnitRunner.class)
-public class HibernateEntitySessionTest implements
+public class EntitySessionByJPATest implements
 		EntitySessionTestScenario {
-	Session session = mock(Session.class);
-	Transaction transaction = mock(Transaction.class);
+	EntityManager manager = mock(EntityManager.class);
+	EntityTransaction entityTransaction = mock(EntityTransaction.class);
 	final Message message = new Message("Hello");
 
 	EntitySession O;
 
 	@Before
 	public void ready() {
-		O = new EntitySession(session);
+		O = new EntitySession(manager);
 	}
 
 	@Test
 	public void shouldBeCreatedWithSession() {
-		assertThat(O.session, is(session));
+		assertThat(O.entityManager, is(manager));
 	}
 
 	@Test
 	public void shouldBePersisted() {
 		O.persist(message);
-		verify(O.session).persist(message);
+		verify(O.entityManager).persist(message);
 	}
 
 	@Test
 	public void shouldBeMerged() {
 		@SuppressWarnings("unused")
 		Message mergedMessage = (Message) O.merge(message);
-		verify(O.session).merge(message);
+		verify(O.entityManager).merge(message);
 	}
 
 	@Test
 	public void shouldBeRemoved() {
 		O.remove(message);
-		verify(O.session).delete(message);
+		verify(O.entityManager).remove(message);
 	}
 
 	@Test
 	public void shouldBeFound() {
 		O.find(Message.class, 1L);
-		verify(O.session).get(Message.class, 1L);
+		verify(O.entityManager).find(Message.class, 1L);
 	}
 
 	@Test
 	public void transactionShouldBeBegun() {
-		when(session.beginTransaction()).thenReturn(transaction);
+		when(manager.getTransaction()).thenReturn(entityTransaction);
 
 		O.beginTransaction();
 
-		assertThat(O.session, is(notNullValue()));
-		verify(transaction).begin();
+		assertThat(O.entityTransaction, is(notNullValue()));
+		verify(entityTransaction).begin();
 	}
-
+	
 	@Test
 	public void transactionCanBeRollbacked() {
-		O.transaction = transaction;
+		O.entityTransaction = entityTransaction;
 		O.rollback();
-		verify(O.transaction).rollback();		
+		verify(O.entityTransaction).rollback();
 	}
 
 	@Test
 	public void canBeClosedSafely() {
 		O.close();
-		verify(O.session).close();
+		verify(O.entityManager).close();
 	}
 
 	@Test
 	public void transactionCanBeCommitted() {
-		O.transaction = transaction;
+		O.entityTransaction = entityTransaction;
 		O.commit();
-		verify(O.transaction).commit();
+		verify(O.entityTransaction).commit();
 	}
 
-	@SuppressWarnings("unchecked")
 	@Test
 	public void allEntitiesShouldBeFound() {
-		Criteria criteria = mock(Criteria.class);
-		when(session.createCriteria(Message.class)).thenReturn(criteria);
-		when(criteria.list()).thenReturn(new ArrayList<Message>());
+		Query query = mock(Query.class);
+		when(manager.createQuery(anyString())).thenReturn(query);
+		when(query.getResultList()).thenReturn(new ArrayList<Message>());
 		
-		List<Message> result = (List<Message>) O.findAll(Message.class);
-		
-		assertThat(result, is(notNullValue()));
-		assertThat(result.size(), is(0));
-		verify(O.session).createCriteria(Message.class);		
+		O.findAll(Message.class);
+		verify(O.entityManager).createQuery(anyString());
 	}
 }
