@@ -111,8 +111,7 @@ public abstract class HiveRecord<T> {
 			field.set(result, entitySession);
 			return result;
 		} catch (Exception e) {
-			e.printStackTrace();
-			return null;
+			throw new HiveRecordException(e.toString(), e);
 		}
 	}
 
