@@ -4,16 +4,16 @@ import javax.persistence.EntityManagerFactory;
 
 import org.hibernate.SessionFactory;
 
-public class SessionManagerFactory {
+public class EntitySessionFactory {
 	private static SessionFactory sessionFactory;
 	private static EntityManagerFactory entityManagerFactory;
 
 	public static void register(EntityManagerFactory entityManagerFactory) {
-		SessionManagerFactory.entityManagerFactory = entityManagerFactory; 
+		EntitySessionFactory.entityManagerFactory = entityManagerFactory;
 	}
-	
+
 	public static void register(SessionFactory sessionFactory) {
-		SessionManagerFactory.sessionFactory = sessionFactory;
+		EntitySessionFactory.sessionFactory = sessionFactory;
 	}
 
 	static void clear() {
@@ -21,7 +21,7 @@ public class SessionManagerFactory {
 			sessionFactory.close();
 			sessionFactory = null;
 		}
-		
+
 		if (entityManagerFactory != null) {
 			entityManagerFactory.close();
 			entityManagerFactory = null;
@@ -30,19 +30,19 @@ public class SessionManagerFactory {
 
 	public static void unregister() {
 		sessionFactory = null;
-		entityManagerFactory = null;		
+		entityManagerFactory = null;
 	}
 
-	public static <T> SessionManager<T> obtainSessionManager() {
+	public static EntitySession obtainEntitySession() {
 		if (sessionFactory == null && entityManagerFactory == null) {
 			throw new IllegalStateException(
 					"You should register either SessionFactory or EntityManagerFactory.");
 		}
-		
+
 		if (sessionFactory != null) {
-			return new HibernateSessionManager<T>(sessionFactory);
+			return new EntitySession(sessionFactory.openSession());
 		} else {
-			return new JPASessionManager<T>(entityManagerFactory);			
+			return new EntitySession(entityManagerFactory.createEntityManager());
 		}
 	}
 }
