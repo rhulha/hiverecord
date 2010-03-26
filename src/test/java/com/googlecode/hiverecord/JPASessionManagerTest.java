@@ -56,8 +56,6 @@ public class JPASessionManagerTest {
 			verify(transaction).rollback();
 			throw e;
 		}
-		
-		fail();
 	}
 
 	@Test(expected=HiveRecordException.class)
@@ -71,15 +69,12 @@ public class JPASessionManagerTest {
 			verify(manager).close();
 			throw e;
 		}
-}
+	}
 	
 	@Test
 	public void shouldBeCommitedAfterFindingEntity() throws Exception {
-		when(manager.find(Message.class, 1L)).thenReturn(messsage);
-
-		Message result = O.find(Message.class, 1L);
-
-		assertThat(result, equalTo(messsage));
+		O.find(Message.class, 1L);
+		verify(manager).find(Message.class, 1L);
 		verify(transaction).commit();
 	}
 
@@ -101,8 +96,6 @@ public class JPASessionManagerTest {
 			verify(transaction).rollback();
 			throw e;
 		}
-
-		fail();
 	}
 
 	@Test(expected = HiveRecordException.class)
@@ -117,8 +110,6 @@ public class JPASessionManagerTest {
 			verify(manager).close();
 			throw e;
 		}
-
-		fail();
 	}
 
 	@Test
@@ -129,9 +120,19 @@ public class JPASessionManagerTest {
 		assertThat(O.findAll(Message.class).size(), is(0));
 
 		verify(transaction).commit();
-		verify(manager).close();
 	}
 
+
+	@Test
+	public void shouldBeClosedAfterFindingAllEntity() throws Exception {
+		when(manager.createQuery(anyString())).thenReturn(query);
+		when(query.getResultList()).thenReturn(new ArrayList<Message>());
+
+		O.findAll(Message.class);
+
+		verify(manager).close();
+	}
+	
 	@Test
 	public void openStateShouldBeReturned() {
 		when(manager.isOpen()).thenReturn(true);
@@ -148,11 +149,21 @@ public class JPASessionManagerTest {
 			O.merge(messsage);
 		} catch (Exception e) {
 			verify(transaction).rollback();
+			throw e;
+		}
+	}
+
+	@Test(expected = HiveRecordException.class)
+	public void shouldBeClosedWhenThereAreProblemsWithMerge()
+			throws Exception {
+		when(manager.merge(messsage)).thenThrow(new RuntimeException());
+
+		try {
+			O.merge(messsage);
+		} catch (Exception e) {
 			verify(manager).close();
 			throw e;
 		}
-
-		fail();
 	}
 
 	@Test
@@ -160,6 +171,12 @@ public class JPASessionManagerTest {
 		when(manager.merge(messsage)).thenReturn(messsage);
 		O.merge(messsage);
 		verify(transaction).commit();
+		verify(manager).close();
+	}
+
+	@Test
+	public void shouldBeClosedAfterMergingEntity() {
+		O.merge(messsage);
 		verify(manager).close();
 	}
 
@@ -172,17 +189,33 @@ public class JPASessionManagerTest {
 			O.persist(messsage);
 		} catch (Exception e) {
 			verify(transaction).rollback();
+			throw e;
+		}
+	}
+
+	@Test(expected = HiveRecordException.class)
+	public void shouldBeClosedWhenThereAreProblemsWithPersist()
+			throws Exception {
+		doThrow(new RuntimeException()).when(manager).persist(messsage);
+
+		try {
+			O.persist(messsage);
+		} catch (Exception e) {
 			verify(manager).close();
 			throw e;
 		}
-
-		fail();
 	}
 
 	@Test
 	public void shouldBeCommitedAfterPersistingEntity() throws Exception {
 		O.merge(messsage);
 		verify(transaction).commit();
+		verify(manager).close();
+	}
+
+	@Test
+	public void shouldBeClosedAfterPersistingEntity() throws Exception {
+		O.merge(messsage);
 		verify(manager).close();
 	}
 
@@ -196,11 +229,22 @@ public class JPASessionManagerTest {
 			O.remove(messsage);
 		} catch (Exception e) {
 			verify(transaction).rollback();
+			throw e;
+		}
+	}
+
+	@Test(expected = HiveRecordException.class)
+	public void shouldBeClosedWhenThereAreProblemsWithRemove()
+			throws Exception {
+		when(manager.merge(messsage)).thenReturn(messsage);
+		doThrow(new RuntimeException()).when(manager).remove(messsage);
+
+		try {
+			O.remove(messsage);
+		} catch (Exception e) {
 			verify(manager).close();
 			throw e;
 		}
-
-		fail();
 	}
 
 	@Test
@@ -209,7 +253,13 @@ public class JPASessionManagerTest {
 		verify(transaction).commit();
 		verify(manager).close();
 	}
-	
+
+	@Test
+	public void shouldBeClosedAfterRemovingEntity() throws Exception {
+		O.remove(messsage);
+		verify(manager).close();
+	}
+
 	@Test 
 	public void shouldBeNotCommitedAfterRollbacked() {
 		O.rollbacked = true;
