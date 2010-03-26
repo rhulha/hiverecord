@@ -45,7 +45,7 @@ public class JPASessionManagerTest {
 		when(manager.getTransaction()).thenReturn(transaction);
 	}
 
-	@Test
+	@Test(expected=HiveRecordException.class)
 	public void shouldBeRollbackedWhenThereAreProblemsWithFind()
 			throws Exception {
 		when(manager.find(Message.class, 1L)).thenThrow(new RuntimeException());
@@ -53,12 +53,14 @@ public class JPASessionManagerTest {
 		try {
 			O.find(Message.class, 1L);
 		} catch (HiveRecordException e) {
+			verify(transaction).rollback();
+			throw e;
 		}
-
-		verify(transaction).rollback();
+		
+		fail();
 	}
 
-	@Test
+	@Test(expected=HiveRecordException.class)
 	public void shouldBeClosedEvenThoughThereAreProblemsWithFind()
 			throws Exception {
 		when(manager.find(Message.class, 1L)).thenThrow(new RuntimeException());
@@ -66,9 +68,9 @@ public class JPASessionManagerTest {
 		try {
 			O.find(Message.class, 1L);
 		} catch (HiveRecordException e) {
+			verify(manager).close();
+			throw e;
 		}
-
-		verify(manager).close();
 }
 	
 	@Test
@@ -97,6 +99,21 @@ public class JPASessionManagerTest {
 			O.findAll(Message.class);
 		} catch (Exception e) {
 			verify(transaction).rollback();
+			throw e;
+		}
+
+		fail();
+	}
+
+	@Test(expected = HiveRecordException.class)
+	public void shouldBeClosedEvenThoughThereAreProblemsWithFindAll()
+			throws Exception {
+		when(manager.createQuery(anyString()))
+				.thenThrow(new RuntimeException());
+
+		try {
+			O.findAll(Message.class);
+		} catch (Exception e) {
 			verify(manager).close();
 			throw e;
 		}
