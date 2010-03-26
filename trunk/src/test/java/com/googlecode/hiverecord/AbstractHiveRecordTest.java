@@ -1,4 +1,4 @@
-package com.googlecode.hiverecord.support;
+package com.googlecode.hiverecord;
 
 import static org.hamcrest.CoreMatchers.*;
 import static org.junit.Assert.*;

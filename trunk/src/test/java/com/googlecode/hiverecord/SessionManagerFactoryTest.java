@@ -10,7 +10,6 @@ import org.hibernate.SessionFactory;
 import org.hibernate.cfg.AnnotationConfiguration;
 import org.junit.Test;
 
-import com.googlecode.hiverecord.support.Message;
 
 public class SessionManagerFactoryTest {
 	@Test(expected = IllegalStateException.class)
