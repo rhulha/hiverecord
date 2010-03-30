@@ -5,7 +5,7 @@
 	<artifactId>hiverecord</artifactId>
 	<name>hiverecord</name>
 	<packaging>jar</packaging>
-	<version>0.1-SNAPSHOT</version>
+	<version>0.2-SNAPSHOT</version>
 
 	<repositories>
 		<repository>
