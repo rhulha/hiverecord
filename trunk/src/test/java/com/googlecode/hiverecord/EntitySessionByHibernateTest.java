@@ -18,8 +18,7 @@ import org.mockito.runners.MockitoJUnitRunner;
 import com.googlecode.hiverecord.support.EntitySessionTestScenario;
 
 @RunWith(MockitoJUnitRunner.class)
-public class EntitySessionByHibernateTest implements
-		EntitySessionTestScenario {
+public class EntitySessionByHibernateTest implements EntitySessionTestScenario {
 	Session session = mock(Session.class);
 	Transaction transaction = mock(Transaction.class);
 	final Message message = new Message("Hello");
@@ -75,7 +74,7 @@ public class EntitySessionByHibernateTest implements
 	public void transactionCanBeRollbacked() {
 		O.transaction = transaction;
 		O.rollback();
-		verify(O.transaction).rollback();		
+		verify(O.transaction).rollback();
 	}
 
 	@Test
@@ -97,11 +96,11 @@ public class EntitySessionByHibernateTest implements
 		Criteria criteria = mock(Criteria.class);
 		when(session.createCriteria(Message.class)).thenReturn(criteria);
 		when(criteria.list()).thenReturn(new ArrayList<Message>());
-		
+
 		List<Message> result = (List<Message>) O.findAll(Message.class);
-		
+
 		assertThat(result, is(notNullValue()));
 		assertThat(result.size(), is(0));
-		verify(O.session).createCriteria(Message.class);		
+		verify(O.session).createCriteria(Message.class);
 	}
 }

@@ -15,7 +15,7 @@ import com.googlecode.hiverecord.support.AbstractFactory;
 
 public class ExternalTransactionIntegrationTest extends AbstractFactory {
 	EntityManagerFactory entityManagerFactory;
-	
+
 	@Before
 	public void readyHiveRecordSessionFactory() {
 		entityManagerFactory = createEntityManagerFactory();
@@ -26,7 +26,7 @@ public class ExternalTransactionIntegrationTest extends AbstractFactory {
 	public void clearHiveRecordSessionFactory() {
 		EntitySessionFactory.unregister();
 	}
-	
+
 	@Test
 	public void shouldBeRollbackedAccrodingToExternalTransaction() {
 		EntityManager entityManager = null;
@@ -35,11 +35,12 @@ public class ExternalTransactionIntegrationTest extends AbstractFactory {
 			entityManager = entityManagerFactory.createEntityManager();
 			transaction = entityManager.getTransaction();
 			transaction.begin();
-			
+
 			entityManager.persist(new Message("First"));
 			assertThat(Message.findAll(Message.class).size(), is(1));
-			
-			Message message = Message.createWithCustomTransactionMode(Message.class, entityManager);
+
+			Message message = Message.createWithCustomTransactionMode(
+					Message.class, entityManager);
 			message.setMessage("Second");
 			message.persist();
 			assertThat(Message.findAll(Message.class).size(), is(2));
@@ -62,15 +63,16 @@ public class ExternalTransactionIntegrationTest extends AbstractFactory {
 			entityManager = entityManagerFactory.createEntityManager();
 			transaction = entityManager.getTransaction();
 			transaction.begin();
-			
+
 			entityManager.persist(new Message("First"));
 			assertThat(Message.findAll(Message.class).size(), is(1));
-			
-			Message message = Message.createWithCustomTransactionMode(Message.class, entityManager);
+
+			Message message = Message.createWithCustomTransactionMode(
+					Message.class, entityManager);
 			message.setMessage("Second");
 			message.persist();
 			assertThat(Message.findAll(Message.class).size(), is(2));
-			
+
 			transaction.commit();
 		} catch (Exception e) {
 			transaction.rollback();

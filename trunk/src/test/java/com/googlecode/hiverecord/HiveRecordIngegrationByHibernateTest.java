@@ -5,11 +5,11 @@ import org.junit.Before;
 
 import com.googlecode.hiverecord.support.AbstractHiveRecordTest;
 
-
-public class HiveRecordIngegrationByHibernateTest extends AbstractHiveRecordTest {
+public class HiveRecordIngegrationByHibernateTest extends
+		AbstractHiveRecordTest {
 	@Before
 	public void readyHiveRecordSessionFactory() {
-		EntitySessionFactory.register(createSessionFactory());		
+		EntitySessionFactory.register(createSessionFactory());
 	}
 
 	@After
