@@ -74,14 +74,12 @@ public abstract class HiveRecord<T> {
 			entitySession.close();
 		}
 	}
-	
 
 	public static <T> Long count(Class<T> clazz) {
 		EntitySession entitySession = EntitySessionFactory
-		.obtainEntitySession();
+				.obtainEntitySession();
 		return entitySession.count(clazz);
 	}
-	
 
 	@SuppressWarnings("unchecked")
 	public static <T> T find(Class<T> clazz, Serializable id) {

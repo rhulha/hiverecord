@@ -11,11 +11,10 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.runners.MockitoJUnitRunner;
 
-
 @RunWith(MockitoJUnitRunner.class)
 public class HiveRecordTest {
 	EntitySession entitySession = mock(EntitySession.class);
-	
+
 	EntityManager entityManager = mock(EntityManager.class);
 	Session session = mock(Session.class);
 
@@ -39,14 +38,14 @@ public class HiveRecordTest {
 				Message.class, session);
 		verifyWhetherEntitySessionExistsOrNot(message);
 	}
-	
+
 	@Test
 	public void givenEntitySessionShouldBeUsedWhenPersisting() {
 		Message message = Message.createWithCustomTransactionMode(
 				Message.class, entitySession);
-		
+
 		message.persist();
-		
+
 		verify(message.customEntitySession).persist(message);
 	}
 
@@ -54,9 +53,9 @@ public class HiveRecordTest {
 	public void givenEntitySessionShouldBeUsedWhenRemoving() {
 		Message message = Message.createWithCustomTransactionMode(
 				Message.class, entitySession);
-		
+
 		message.remove();
-		
+
 		verify(message.customEntitySession).remove(message);
 	}
 
@@ -64,10 +63,10 @@ public class HiveRecordTest {
 	public void givenEntitySessionShouldBeUsedWhenMerging() {
 		Message message = Message.createWithCustomTransactionMode(
 				Message.class, entitySession);
-		
+
 		@SuppressWarnings("unused")
 		Message mergedMessage = message.merge();
-		
+
 		verify(message.customEntitySession).merge(message);
 	}
 

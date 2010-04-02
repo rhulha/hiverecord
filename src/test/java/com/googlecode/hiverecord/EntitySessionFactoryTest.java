@@ -10,8 +10,6 @@ import org.hibernate.SessionFactory;
 import org.hibernate.cfg.AnnotationConfiguration;
 import org.junit.Test;
 
-
-
 public class EntitySessionFactoryTest {
 	@Test(expected = IllegalStateException.class)
 	public void exceptionShouldBeThrownWhenEntitySessionFactoryIsNotBeingReady() {
@@ -22,7 +20,8 @@ public class EntitySessionFactoryTest {
 	@Test
 	public void entitySessionCanBeObtainedAfterRegisteringSessionFactory() {
 		EntitySessionFactory.register(createSessionFactory());
-		EntitySession entitySession = EntitySessionFactory.obtainEntitySession();
+		EntitySession entitySession = EntitySessionFactory
+				.obtainEntitySession();
 
 		assertThat(entitySession, is(notNullValue()));
 
@@ -32,13 +31,14 @@ public class EntitySessionFactoryTest {
 	@Test
 	public void entitySessionCanBeObtainedAfterRegisteringEntityManagerFactory() {
 		EntitySessionFactory.register(createEntityManagerFactory());
-		EntitySession entitySession = EntitySessionFactory.obtainEntitySession();
-		
+		EntitySession entitySession = EntitySessionFactory
+				.obtainEntitySession();
+
 		assertThat(entitySession, is(notNullValue()));
 
 		EntitySessionFactory.clear();
 	}
-	
+
 	private SessionFactory createSessionFactory() {
 		try {
 			AnnotationConfiguration cfg = new AnnotationConfiguration();

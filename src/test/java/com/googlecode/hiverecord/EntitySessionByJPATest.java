@@ -19,8 +19,7 @@ import org.mockito.runners.MockitoJUnitRunner;
 import com.googlecode.hiverecord.support.EntitySessionTestScenario;
 
 @RunWith(MockitoJUnitRunner.class)
-public class EntitySessionByJPATest implements
-		EntitySessionTestScenario {
+public class EntitySessionByJPATest implements EntitySessionTestScenario {
 	EntityManager manager = mock(EntityManager.class);
 	EntityTransaction entityTransaction = mock(EntityTransaction.class);
 	final Message message = new Message("Hello");
@@ -71,7 +70,7 @@ public class EntitySessionByJPATest implements
 		assertThat(O.entityTransaction, is(notNullValue()));
 		verify(entityTransaction).begin();
 	}
-	
+
 	@Test
 	public void transactionCanBeRollbacked() {
 		O.entityTransaction = entityTransaction;
@@ -97,7 +96,7 @@ public class EntitySessionByJPATest implements
 		Query query = mock(Query.class);
 		when(manager.createQuery(anyString())).thenReturn(query);
 		when(query.getResultList()).thenReturn(new ArrayList<Message>());
-		
+
 		O.findAll(Message.class);
 		verify(O.entityManager).createQuery(anyString());
 	}

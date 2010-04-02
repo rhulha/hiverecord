@@ -7,10 +7,9 @@ import org.junit.Test;
 
 import com.googlecode.hiverecord.support.Pizza;
 
-
 public class EntitySessionTest {
 	EntitySession O = new EntitySession();
-	
+
 	@Test
 	public void tablaNameShouldBeObtainedFromEntity() {
 		assertThat(O.tableName(Message.class), is("Message"));

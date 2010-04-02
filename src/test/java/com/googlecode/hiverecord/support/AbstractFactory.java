@@ -23,5 +23,5 @@ public abstract class AbstractFactory {
 	protected EntityManagerFactory createEntityManagerFactory() {
 		return Persistence.createEntityManagerFactory("hiverecord");
 	}
-	
+
 }
