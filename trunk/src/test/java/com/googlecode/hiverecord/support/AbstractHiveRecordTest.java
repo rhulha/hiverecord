@@ -65,6 +65,18 @@ public abstract class AbstractHiveRecordTest extends AbstractFactory {
 	}
 	
 	@Test
+	public void entityCanBeCounted() {
+		long count = 6;
+		for (int i = 0; i < count; i++) {
+			new Message(String.valueOf(i)).persist();
+		}
+		assertThat(Message.count(Message.class), is(count));
+		
+		new Message("One more").persist();
+		assertThat(Message.count(Message.class), is(count + 1));
+}
+	
+	@Test
 	public void entityCanBeRemoved() {
 		Message message = new Message("Hello " + System.currentTimeMillis());
 		message.persist();
