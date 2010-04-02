@@ -44,7 +44,28 @@
 						</goals>
 					</execution>
 				</executions>
-			</plugin>			
+			</plugin>
+			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>build-helper-maven-plugin</artifactId>
+				<version>1.3</version>
+				<executions>
+					<execution>
+						<id>add-test-source</id>
+						<phase>generate-sources</phase>
+						<goals>
+							<goal>add-test-source</goal>
+						</goals>
+						<configuration>
+							<sources>
+								<source>
+									${basedir}/src/integration-test/java
+								</source>
+							</sources>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
 		</plugins>
 		<extensions>
 			<extension>
@@ -52,7 +73,7 @@
 				<artifactId>wagon-webdav</artifactId>
 				<version>1.0-beta-2</version>
 			</extension>
-		</extensions>  		
+		</extensions>
 	</build>
 
 	<reporting>
@@ -98,7 +119,7 @@
 			<artifactId>commons-lang</artifactId>
 			<version>2.4</version>
 		</dependency>
-			
+
 		<!-- Provided -->
 		<dependency>
 			<groupId>org.hibernate</groupId>
@@ -106,7 +127,7 @@
 			<version>3.4.0.GA</version>
 			<scope>provided</scope>
 		</dependency>
-		
+
 		<!-- Dependencies for testing -->
 		<dependency>
 			<groupId>junit</groupId>
@@ -145,15 +166,15 @@
 			<scope>test</scope>
 		</dependency>
 		<dependency>
-		    <groupId>org.slf4j</groupId>
-		    <artifactId>slf4j-log4j12</artifactId>
-		    <version>1.5.2</version>
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-log4j12</artifactId>
+			<version>1.5.2</version>
 			<scope>test</scope>
-		</dependency>		
+		</dependency>
 		<dependency>
-		    <groupId>hsqldb</groupId>
-		    <artifactId>hsqldb</artifactId>
-		    <version>1.8.0.10</version>
+			<groupId>hsqldb</groupId>
+			<artifactId>hsqldb</artifactId>
+			<version>1.8.0.10</version>
 			<scope>test</scope>
 		</dependency>
 	</dependencies>
