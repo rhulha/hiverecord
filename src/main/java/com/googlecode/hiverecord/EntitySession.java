@@ -5,6 +5,7 @@ import java.util.List;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityTransaction;
+import javax.persistence.Table;
 
 import org.hibernate.Session;
 import org.hibernate.Transaction;
@@ -16,19 +17,22 @@ public class EntitySession {
 	Session session;
 	Transaction transaction;
 
+	EntitySession() {
+	}
+
 	public EntitySession(EntityManager entityManager) {
-		this.entityManager = entityManager; 
+		this.entityManager = entityManager;
 	}
 
 	public EntitySession(Session session) {
-		this.session = session; 
+		this.session = session;
 	}
 
 	public void persist(Object entity) {
 		if (entityManager != null) {
 			entityManager.persist(entity);
 		} else {
-			session.persist(entity);			
+			session.persist(entity);
 		}
 	}
 
@@ -56,6 +60,18 @@ public class EntitySession {
 		}
 	}
 
+	public Long count(Class<?> clazz) {
+		if (entityManager != null) {
+			return (Long) entityManager.createQuery(
+					"select count(o) from " + tableName(clazz) + " o")
+					.getSingleResult();
+		} else {
+			return (Long) session.createQuery(
+					"select count(o) from " + tableName(clazz) + " o").list()
+					.get(0);
+		}
+	}
+
 	public void beginTransaction() {
 		if (entityManager != null) {
 			entityTransaction = entityManager.getTransaction();
@@ -79,7 +95,7 @@ public class EntitySession {
 			entityManager.close();
 		} else {
 			session.close();
-		}		
+		}
 	}
 
 	public void commit() {
@@ -92,9 +108,15 @@ public class EntitySession {
 
 	public List<?> findAll(Class<?> clazz) {
 		if (entityManager != null) {
-			return entityManager.createQuery("SELECT o FROM " + clazz.getName() + " o").getResultList();
+			return entityManager.createQuery(
+					"SELECT o FROM " + tableName(clazz) + " o").getResultList();
 		} else {
 			return session.createCriteria(clazz).list();
-		}		
+		}
+	}
+
+	String tableName(Class<?> clazz) {
+		Table table = clazz.getAnnotation(Table.class);
+		return table == null ? clazz.getSimpleName() : table.name();
 	}
 }
