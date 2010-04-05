@@ -65,11 +65,11 @@ public class EntitySession {
 	public Long count(Class<?> clazz) {
 		if (entityManager != null) {
 			return (Long) entityManager.createQuery(
-					"select count(o) from " + tableName(clazz) + " o")
+					"SELECT COUNT(o) FROM " + tableName(clazz) + " o")
 					.getSingleResult();
 		} else {
 			return (Long) session.createQuery(
-					"select count(o) from " + tableName(clazz) + " o").list()
+					"SELECT COUNT(o) FROM " + tableName(clazz) + " o").list()
 					.get(0);
 		}
 	}
@@ -120,7 +120,7 @@ public class EntitySession {
 	public List<?> top(Class<?> clazz, int topCount, Order order) {
 		if (entityManager != null) {
 			return entityManager.createQuery(
-					"select o from " + tableName(clazz) + " o order by o."
+					"SELECT o FROM " + tableName(clazz) + " o ORDER BY o."
 							+ order.toString()).setFirstResult(0)
 					.setMaxResults(topCount).getResultList();
 		} else {
