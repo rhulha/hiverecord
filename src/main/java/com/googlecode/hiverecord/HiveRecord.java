@@ -7,6 +7,7 @@ import java.util.List;
 import javax.persistence.EntityManager;
 
 import org.hibernate.Session;
+import org.hibernate.criterion.Order;
 
 public abstract class HiveRecord<T> {
 	EntitySession customEntitySession;
@@ -79,6 +80,13 @@ public abstract class HiveRecord<T> {
 		EntitySession entitySession = EntitySessionFactory
 				.obtainEntitySession();
 		return entitySession.count(clazz);
+	}
+
+	@SuppressWarnings("unchecked")
+	public static <T> List<T> top(Class<T> classz, int topCount, Order order) {
+		EntitySession entitySession = EntitySessionFactory
+		.obtainEntitySession();
+		return (List<T>)entitySession.top(classz, topCount, order);
 	}
 
 	@SuppressWarnings("unchecked")

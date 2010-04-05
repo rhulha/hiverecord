@@ -7,8 +7,10 @@ import javax.persistence.EntityManager;
 import javax.persistence.EntityTransaction;
 import javax.persistence.Table;
 
+import org.hibernate.Criteria;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
+import org.hibernate.criterion.Order;
 
 public class EntitySession {
 	EntityManager entityManager;
@@ -112,6 +114,19 @@ public class EntitySession {
 					"SELECT o FROM " + tableName(clazz) + " o").getResultList();
 		} else {
 			return session.createCriteria(clazz).list();
+		}
+	}
+
+	public List<?> top(Class<?> clazz, int topCount, Order order) {
+		if (entityManager != null) {
+			return entityManager.createQuery(
+					"select o from " + tableName(clazz) + " o order by o."
+							+ order.toString()).setFirstResult(0)
+					.setMaxResults(topCount).getResultList();
+		} else {
+			Criteria criteria = session.createCriteria(clazz);
+			criteria.addOrder(order).setFirstResult(0).setMaxResults(topCount);
+			return criteria.list();
 		}
 	}
 

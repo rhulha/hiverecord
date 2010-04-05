@@ -6,8 +6,6 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 
-import com.googlecode.hiverecord.HiveRecord;
-
 @Entity
 public class Message extends HiveRecord<Message> {
 	@Id
