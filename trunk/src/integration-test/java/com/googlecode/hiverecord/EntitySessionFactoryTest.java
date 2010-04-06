@@ -1,7 +1,8 @@
 package com.googlecode.hiverecord;
 
-import static org.hamcrest.CoreMatchers.*;
-import static org.junit.Assert.*;
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.CoreMatchers.notNullValue;
+import static org.junit.Assert.assertThat;
 
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
