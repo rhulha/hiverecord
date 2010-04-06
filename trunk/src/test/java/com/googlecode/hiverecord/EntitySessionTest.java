@@ -15,4 +15,6 @@ public class EntitySessionTest {
 		assertThat(O.tableName(Message.class), is("Message"));
 		assertThat(O.tableName(Pizza.class), is("OhPizza"));
 	}
+	
+	//TODO Tests should be added here.
 }

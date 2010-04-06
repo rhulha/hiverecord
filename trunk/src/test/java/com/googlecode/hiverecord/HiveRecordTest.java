@@ -1,12 +1,11 @@
 package com.googlecode.hiverecord;
 
-import static org.hamcrest.CoreMatchers.*;
-import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 
 import javax.persistence.EntityManager;
 
 import org.hibernate.Session;
+import org.hibernate.criterion.Order;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.runners.MockitoJUnitRunner;
@@ -17,27 +16,6 @@ public class HiveRecordTest {
 
 	EntityManager entityManager = mock(EntityManager.class);
 	Session session = mock(Session.class);
-
-	@Test
-	public void canBeCreatedWithCustomTransactionMode() {
-		Message message = Message.createWithCustomTransactionMode(
-				Message.class, entitySession);
-		verifyWhetherEntitySessionExistsOrNot(message);
-	}
-
-	@Test
-	public void canBeCreatedWithCustomTransactionModeByEntityManager() {
-		Message message = Message.createWithCustomTransactionMode(
-				Message.class, entityManager);
-		verifyWhetherEntitySessionExistsOrNot(message);
-	}
-
-	@Test
-	public void canBeCreatedWithCustomTransactionModeBySession() {
-		Message message = Message.createWithCustomTransactionMode(
-				Message.class, session);
-		verifyWhetherEntitySessionExistsOrNot(message);
-	}
 
 	@Test
 	public void givenEntitySessionShouldBeUsedWhenPersisting() {
@@ -82,8 +60,10 @@ public class HiveRecordTest {
 		verify(entitySession).findAll(Message.class);
 	}
 
-	private void verifyWhetherEntitySessionExistsOrNot(Message message) {
-		assertThat(message, is(notNullValue()));
-		assertThat(message.customEntitySession, is(notNullValue()));
+	@Test
+	public void givenEntitySessionShouldBeUsedWhenFindingAllOnTop() {
+		Order order = Order.asc("someProperty");
+		Message.findAll(Message.class, 2, order, entitySession);
+		verify(entitySession).findAll(Message.class, 2, order);
 	}
 }

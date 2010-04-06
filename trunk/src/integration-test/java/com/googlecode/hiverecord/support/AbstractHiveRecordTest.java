@@ -78,13 +78,14 @@ public abstract class AbstractHiveRecordTest extends AbstractFactory {
 		new Message("One more").persist();
 		assertThat(Message.count(Message.class), is(count + 1));
 	}
-	
+
 	@Test
 	public void entitiesOnTopCanBeObtainedWithAsc() {
 		insertEntities(5);
-		
-		List<Message> result = Message.top(Message.class, 2, Order.asc("id"));
-		
+
+		List<Message> result = Message.findAll(Message.class, 2, Order
+				.asc("id"));
+
 		assertThat(result.size(), is(2));
 		assertThat(result.get(0).getMessage(), is("1"));
 		assertThat(result.get(1).getMessage(), is("2"));
@@ -93,15 +94,24 @@ public abstract class AbstractHiveRecordTest extends AbstractFactory {
 	@Test
 	public void entitiesOnTopCanBeObtainedWithDesc() {
 		insertEntities(5);
-		
-		List<Message> result = Message.top(Message.class, 3, Order.desc("id"));
+
+		List<Message> result = Message.findAll(Message.class, 3, Order
+				.desc("id"));
 
 		assertThat(result.size(), is(3));
 		assertThat(result.get(0).getMessage(), is("5"));
 		assertThat(result.get(1).getMessage(), is("4"));
 		assertThat(result.get(2).getMessage(), is("3"));
 	}
-	
+
+	@Test
+	public void findAllWithTopShouldReturnEmptyListOfEntitiesIfThereIsNoEntity() {
+		List<Message> result = Message.findAll(Message.class, 3, Order
+				.desc("id"));
+
+		assertThat(result.size(), is(0));
+	}
+
 	@Test
 	public void entityCanBeRemoved() {
 		Message message = new Message("Hello " + System.currentTimeMillis());
@@ -111,7 +121,6 @@ public abstract class AbstractHiveRecordTest extends AbstractFactory {
 
 		assertThat(Message.findAll(Message.class).size(), is(0));
 	}
-
 
 	private void insertEntities(int count) {
 		for (int i = 1; i <= count; i++) {

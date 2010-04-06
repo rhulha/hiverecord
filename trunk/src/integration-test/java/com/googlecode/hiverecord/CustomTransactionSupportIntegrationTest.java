@@ -13,7 +13,7 @@ import org.junit.Test;
 
 import com.googlecode.hiverecord.support.AbstractFactory;
 
-public class ExternalTransactionTest extends AbstractFactory {
+public class CustomTransactionSupportIntegrationTest extends AbstractFactory {
 	EntityManagerFactory entityManagerFactory;
 
 	@Before

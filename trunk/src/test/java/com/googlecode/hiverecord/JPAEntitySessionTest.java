@@ -19,7 +19,7 @@ import org.mockito.runners.MockitoJUnitRunner;
 import com.googlecode.hiverecord.support.EntitySessionTestScenario;
 
 @RunWith(MockitoJUnitRunner.class)
-public class EntitySessionByJPATest implements EntitySessionTestScenario {
+public class JPAEntitySessionTest implements EntitySessionTestScenario {
 	EntityManager manager = mock(EntityManager.class);
 	EntityTransaction entityTransaction = mock(EntityTransaction.class);
 	final Message message = new Message("Hello");
