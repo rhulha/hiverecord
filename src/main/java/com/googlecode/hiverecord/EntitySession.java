@@ -125,7 +125,9 @@ public class EntitySession {
 					.setMaxResults(topCount).getResultList();
 		} else {
 			Criteria criteria = session.createCriteria(clazz);
-			criteria.addOrder(order).setFirstResult(0).setMaxResults(topCount);
+			criteria.addOrder(order);
+			criteria.setFirstResult(0);
+			criteria.setMaxResults(topCount);
 			return criteria.list();
 		}
 	}

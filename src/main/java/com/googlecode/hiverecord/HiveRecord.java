@@ -15,9 +15,7 @@ public abstract class HiveRecord<T> extends CustomTransactionSupport<T> {
 			return;
 		}
 
-		EntitySession entitySession = EntitySessionFactory
-				.obtainEntitySession();
-		entitySession.beginTransaction();
+		EntitySession entitySession = entitySession();
 
 		try {
 			entitySession.persist(this);
@@ -36,9 +34,7 @@ public abstract class HiveRecord<T> extends CustomTransactionSupport<T> {
 			return;
 		}
 
-		EntitySession entitySession = EntitySessionFactory
-				.obtainEntitySession();
-		entitySession.beginTransaction();
+		EntitySession entitySession = entitySession();
 
 		try {
 			entitySession.remove(entitySession.merge(this));
@@ -57,9 +53,7 @@ public abstract class HiveRecord<T> extends CustomTransactionSupport<T> {
 			return (T) customEntitySession.merge(this);
 		}
 
-		EntitySession entitySession = EntitySessionFactory
-				.obtainEntitySession();
-		entitySession.beginTransaction();
+		EntitySession entitySession = entitySession();
 
 		try {
 			T result = (T) entitySession.merge(this);
@@ -145,5 +139,12 @@ public abstract class HiveRecord<T> extends CustomTransactionSupport<T> {
 			Order order, EntityManager entityManager) {
 		return (List<T>) new EntitySession(entityManager).findAll(classz,
 				topCount, order);
+	}
+	
+	private EntitySession entitySession() {
+		EntitySession entitySession = EntitySessionFactory
+				.obtainEntitySession();
+		entitySession.beginTransaction();
+		return entitySession;
 	}
 }
