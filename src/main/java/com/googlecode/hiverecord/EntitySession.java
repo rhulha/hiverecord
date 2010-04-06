@@ -69,8 +69,8 @@ public class EntitySession {
 					.getSingleResult();
 		} else {
 			return (Long) session.createQuery(
-					"SELECT COUNT(o) FROM " + tableName(clazz) + " o").list()
-					.get(0);
+					"SELECT COUNT(o) FROM " + tableName(clazz) + " o")
+					.uniqueResult();
 		}
 	}
 
@@ -117,7 +117,7 @@ public class EntitySession {
 		}
 	}
 
-	public List<?> top(Class<?> clazz, int topCount, Order order) {
+	public List<?> findAll(Class<?> clazz, int topCount, Order order) {
 		if (entityManager != null) {
 			return entityManager.createQuery(
 					"SELECT o FROM " + tableName(clazz) + " o ORDER BY o."
