@@ -45,4 +45,12 @@ public class EntitySessionFactory {
 			return new EntitySession(entityManagerFactory.createEntityManager());
 		}
 	}
+
+	public static SessionFactory getSessionFactory() {
+		return sessionFactory;
+	}
+
+	public static EntityManagerFactory getEntityManagerFactory() {
+		return entityManagerFactory;
+	}
 }

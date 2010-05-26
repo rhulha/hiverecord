@@ -5,6 +5,7 @@ import java.util.List;
 
 import javax.persistence.EntityManager;
 
+import org.apache.commons.lang.builder.ToStringBuilder;
 import org.hibernate.Session;
 import org.hibernate.criterion.Order;
 
@@ -140,11 +141,16 @@ public abstract class HiveRecord<T> extends CustomTransactionSupport<T> {
 		return (List<T>) new EntitySession(entityManager).findAll(classz,
 				topCount, order);
 	}
-	
-	private EntitySession entitySession() {
+
+	protected EntitySession entitySession() {
 		EntitySession entitySession = EntitySessionFactory
 				.obtainEntitySession();
 		entitySession.beginTransaction();
 		return entitySession;
+	}
+
+	@Override
+	public String toString() {
+		return ToStringBuilder.reflectionToString(this);
 	}
 }
