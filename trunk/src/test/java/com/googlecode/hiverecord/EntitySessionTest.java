@@ -25,7 +25,6 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
-import com.googlecode.hiverecord.support.Pizza;
 
 @RunWith(MockitoJUnitRunner.class)
 public class EntitySessionTest {
@@ -44,7 +43,7 @@ public class EntitySessionTest {
 	@Test
 	public void tablaNameShouldBeObtainedFromEntity() {
 		assertThat(O.tableName(Message.class), is("Message"));
-		assertThat(O.tableName(Pizza.class), is("OhPizza"));
+		//assertThat(O.tableName(Pizza.class), is("OhPizza"));
 	}
 	
 	@Test

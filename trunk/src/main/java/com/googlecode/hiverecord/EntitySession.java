@@ -5,7 +5,6 @@ import java.util.List;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityTransaction;
-import javax.persistence.Table;
 
 import org.hibernate.Criteria;
 import org.hibernate.Session;
@@ -133,7 +132,6 @@ public class EntitySession {
 	}
 
 	String tableName(Class<?> clazz) {
-		Table table = clazz.getAnnotation(Table.class);
-		return table == null ? clazz.getSimpleName() : table.name();
+		return clazz.getSimpleName();
 	}
 }
